@@ -1,0 +1,26 @@
+# Yaml Object vs Yaml Array.
+apiVersion: NONE
+kind: Describtion
+metadata:
+  # https://stackoverflow.com/questions/23657086/yaml-multi-line-arrays
+  array-flowstyle: ["a", b]
+  array-blockstyle: 
+  - "a"
+  - b
+
+  # https://stackoverflow.com/questions/33989612/yaml-equivalent-of-array-of-objects-in-json
+  object-flowstyle: {letter1: "a", letter2: b}
+  object-blockstyle:
+    letter1: "a"
+    letter2: b
+
+  # Mixing both.
+  array-of-objects-flowstyle: [{letter1: "a", letter2: b}, {letter1: "c", letter2: d}] # please don't use array-of-objects-flowstyle!
+  array-of-objects-flowblock: 
+  - {letter1: "a", letter2: b}
+  - {letter1: "c", letter2: d}
+  array-of-objects-blockstyle:
+  - letter1: "a"
+    letter2: b
+  - letter1: "c"
+    letter2: d

@@ -9,3 +9,30 @@ spec:
     image: ubuntu
     args: 
     - "date"
+---
+#  Multiple args as yaml array.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  restartPolicy: Never
+  containers:
+  - name: ubuntu
+    image: ubuntu
+    args:
+    - date
+    - next string
+    - ...
+---
+# Alternative args declaration.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  restartPolicy: Never
+  containers:
+  - name: ubuntu
+    image: ubuntu
+    args: ["date", "next string", "..."]
