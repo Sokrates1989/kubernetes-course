@@ -1,3 +1,6 @@
+# Annotations from Patrick concerning fork
+I will add comments and explanations for clarity and centralization.
+
 # Kubernetes From Scratch
 
 This repo contains the source code for the kubernetes course.
