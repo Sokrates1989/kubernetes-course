@@ -1,0 +1,39 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+
+# Own Name/ Info of HorizontalPodAutoscaler.
+metadata:
+  name: [ ? ] 
+spec:
+
+  # What Deployment (WorkRessource) to autoscale.
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: [ ? ]
+
+  # How many Replicas do you want to have min/ max?
+  minReplicas: [ ? ]
+  maxReplicas: [ ? ]
+
+  # Based on what shall the replicas be scaled.
+  metrics:
+  # CPU.
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: [ ? ]
+  # RAM.
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: [ ? ]    
+
+  # 
+  behavior: 
+    scaleDown:
+      stabilizationWindowSeconds: [ ? ]          
