@@ -33,7 +33,7 @@ spec:
         type: AverageValue
         averageValue: [ ? ]    
 
-  # 
+  # After load has been decresead -> How long to wait before scaling down.
   behavior: 
     scaleDown:
       stabilizationWindowSeconds: [ ? ]          
