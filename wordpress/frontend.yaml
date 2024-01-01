@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-frontend
+  namespace: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress-frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wordpress-frontend
+    spec:
+      containers:
+      - name: wordpress-frontend
+        image: wordpress:latest
+        env:
+        - name: "WORDPRESS_DB_HOST"
+          value: "wordpress-db-service"
+        - name: "WORDPRESS_DB_USER"
+          value: "wordpress"
+        - name: "WORDPRESS_DB_PASSWORD"
+          value: "wordpress"
+        - name: "WORDPRESS_DB_NAME"
+          value: "wordpress"
+        ports:
+        - containerPort: 80
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 1
+          failureThreshold: 30  
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 5
+          failureThreshold: 3                
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-frontend-service
+  namespace: wordpress
+spec:
+  selector:
+    app: wordpress-frontend
+  ports:
+  - port: 80
+    targetPort: 80

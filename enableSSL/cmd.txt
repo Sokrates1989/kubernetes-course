@@ -1,0 +1,12 @@
+# Create Certificate.
+HOST="ananda-api.com"
+KEY_FILE="/home/patrick/enable-ssl/ananda-api/priv.key"
+CERT_FILE="/home/patrick/enable-ssl/ananda-api/cert.crt"
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "${KEY_FILE}" -out "${CERT_FILE}" -subj "/CN=${HOST}/O=${HOST}" -addext "subjectAltName = DNS:${HOST}"
+
+# Add to kubernetes as secret.
+KEY_FILE="D:\Development\Udemy\kubernetes\ananda-api\ssl\priv.key"
+CERT_FILE="D:\Development\Udemy\kubernetes\ananda-api\ssl\cert.crt"
+CERT_NAME="ananda-api.com"
+kubectl create secret tls ${CERT_NAME} --key ${KEY_FILE} --cert ${CERT_FILE}

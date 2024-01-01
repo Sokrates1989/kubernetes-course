@@ -1,0 +1,53 @@
+# Simple webservice App saying "Hello".
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  namespace: hello-world
+spec:
+  selector:
+    matchLabels:
+      app: hello-world
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-world
+        image: sokrates1989/hello-world-app
+        envFrom:
+        - configMapRef:
+            name: hello-world-env
+        ports:
+        - containerPort: 8888              
+        resources:
+          requests:
+            cpu: 50m
+            memory: 10Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi 
+---
+# Port Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-service
+  namespace: hello-world
+spec:
+  selector:
+    app: hello-world
+  ports:
+  - port: 8888
+    targetPort: 8888
+---
+# Environment Variables ConfigMap.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-env
+  namespace: hello-world
+data:
+  GREETING_NAME: "Awesome Developer"

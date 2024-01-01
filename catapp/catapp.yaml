@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catapp
+  namespace: catapp
+spec:
+  selector:
+    matchLabels:
+      app: catapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: catapp
+    spec:
+      containers:
+      - name: catapp
+        image: mikesir87/cats:1.0
+        ports:
+        - containerPort: 5000              
+        resources:
+          requests:
+            cpu: 50m
+            memory: 10Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catapp-service
+  namespace: catapp
+spec:
+  selector:
+    app: catapp
+  ports:
+  - port: 5000
+    targetPort: 5000

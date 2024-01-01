@@ -1,0 +1,61 @@
+# Database.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: phpmyadmin-db
+  namespace: phpmyadmin
+spec:
+  serviceName: phpmyadmin-db
+  selector:
+    matchLabels:
+      app: phpmyadmin-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin-db
+    spec:
+      containers:
+      - name: phpmyadmin-db
+        image: mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts: 
+        - name: phpmyadmin-db-storage
+          mountPath: /var/lib/mysql
+        envFrom:
+        - configMapRef:
+            name: phpmyadmin-db-env
+  volumeClaimTemplates:
+  - metadata:
+      name: phpmyadmin-db-storage
+    spec:
+      storageClassName: standard
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2G              
+---
+# Port Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin-db-service
+  namespace: phpmyadmin
+spec:
+  clusterIP: None
+  selector:
+    app: phpmyadmin-db
+  ports:
+  - port: 3306
+    targetPort: 3306
+---
+# Environment Variables.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: phpmyadmin-db-env
+  namespace: phpmyadmin
+data:
+  MYSQL_ROOT_PASSWORD: test

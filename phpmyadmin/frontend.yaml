@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin-frontend
+  namespace: phpmyadmin
+spec:
+  selector:
+    matchLabels:
+      app: phpmyadmin-frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin-frontend
+    spec:
+      containers:
+      - name: phpmyadmin-frontend
+        image: phpmyadmin/phpmyadmin
+        envFrom:
+        - configMapRef:
+            name: phpmyadmin-frontend-env
+        ports:
+        - containerPort: 80
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 1
+          failureThreshold: 30  
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 5
+          failureThreshold: 3                
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin-frontend-service
+  namespace: phpmyadmin
+spec:
+  selector:
+    app: phpmyadmin-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# Environment Variables.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: phpmyadmin-frontend-env
+  namespace: phpmyadmin
+data:
+  PMA_HOST: phpmyadmin-db-service

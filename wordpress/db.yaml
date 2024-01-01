@@ -1,0 +1,64 @@
+# Database.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wordpress-db
+  namespace: wordpress
+spec:
+  serviceName: wordpress
+  selector:
+    matchLabels:
+      app: wordpress-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wordpress-db
+    spec:
+      containers:
+      - name: wordpress-db
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+        volumeMounts: 
+        - name: wordpress-db-storage 
+          mountPath: /var/lib/mysql
+        envFrom:
+        - configMapRef:
+            name: wordpress-db-env
+  volumeClaimTemplates:
+  - metadata:
+      name: wordpress-db-storage 
+    spec:
+      storageClassName: standard
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1G              
+---
+# Port Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-db-service
+  namespace: wordpress
+spec:
+  clusterIP: None
+  selector:
+    app: wordpress-db
+  ports:
+  - port: 3306
+    targetPort: 3306
+---
+# Environment Variables.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress-db-env
+  namespace: wordpress
+data:
+  MYSQL_ROOT_PASSWORD: wordpress
+  MYSQL_DATABASE: wordpress
+  MYSQL_USER: wordpress
+  MYSQL_PASSWORD: wordpress
