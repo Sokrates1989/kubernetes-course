@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: local-storage-test-ingress
+  namespace: local-storage-test
+  # This annotation strips the prefix (/local-storage-test) from the request before routing to target container.
+  # local-storage-test cannot handle path based requests and we do not want it to.
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /local-storage-test
+        pathType: Prefix
+        backend: 
+          service:
+            name: local-storage-test-service
+            port:
+              number: 8888     
+                              

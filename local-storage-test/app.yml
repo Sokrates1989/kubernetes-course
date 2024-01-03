@@ -1,0 +1,48 @@
+# Simple webservice App displaying /src/index.html .
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: local-storage-test
+  namespace: local-storage-test
+spec:
+  selector:
+    matchLabels:
+      app: local-storage-test
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: local-storage-test
+    spec:
+      containers:
+      - name: local-storage-test
+        image: sokrates1989/local-storage-test
+        volumeMounts:
+          - name: local-persistent-storage
+            mountPath: /code/src
+        ports:
+        - containerPort: 8888              
+        resources:
+          requests:
+            cpu: 50m
+            memory: 10Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi 
+      volumes:
+        - name: local-persistent-storage
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim
+---
+# Port Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: local-storage-test-service
+  namespace: local-storage-test
+spec:
+  selector:
+    app: local-storage-test
+  ports:
+  - port: 8888
+    targetPort: 8888

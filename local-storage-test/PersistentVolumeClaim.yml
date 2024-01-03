@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: persistent-volume-claim
+  namespace: local-storage-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: storage-class
+  resources:
+    requests:
+      storage: 10Gi
