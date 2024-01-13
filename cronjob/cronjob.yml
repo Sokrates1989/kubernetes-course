@@ -10,6 +10,7 @@ spec:
     spec:
       template:
         spec:
+          restartPolicy: OnFailure
           containers:
           - name: hello
             image: busybox:1.28
@@ -18,4 +19,10 @@ spec:
             - /bin/sh
             - -c
             - date; echo Hello from the Kubernetes cluster
-          restartPolicy: OnFailure
+            volumeMounts:
+            - name: ananda-api-config-txt-vol
+              mountPath: /code/config/
+          volumes:
+          - name: ananda-api-config-txt-vol
+            secret:
+              secretName: ananda-api-config-secret
